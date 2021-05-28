@@ -59,9 +59,9 @@ class DBHelper(context: Context) : SQLiteOpenHelper(
         try {
             cursor = db.rawQuery(SELECT_NAME, null)
         } catch (e: SQLException) {
-            //db.execSQL(SELECT_NAME)
             return ArrayList()
         }
+
         var userNama: String = ""
         if (cursor.moveToFirst()) {
             do {
@@ -79,5 +79,39 @@ class DBHelper(context: Context) : SQLiteOpenHelper(
         val selection = "${UserDB.userTable.COLUMN_NAME} = ?"
         val selectionArgs = arrayOf(nama)
         db.delete(UserDB.userTable.TABLE_USER,selection,selectionArgs)
+    }
+
+    fun deleteAllUser(){
+        var db = this.writableDatabase
+        db.delete(UserDB.userTable.TABLE_USER, "",null)
+    }
+
+
+    //transaction model
+    fun beginUserTransaction(){
+        this.writableDatabase.beginTransaction()
+    }
+    fun successUserTransaction(){
+        this.writableDatabase.setTransactionSuccessful()
+    }
+    fun endUserTransaction(){
+        this.writableDatabase.endTransaction()
+    }
+    fun addUserTransaction(user : User){
+        val sqlString = "INSERT INTO ${UserDB.userTable.TABLE_USER} " +
+                "(${UserDB.userTable.COLUMN_ID}" +
+                ",${UserDB.userTable.COLUMN_NAME}" +
+                ",${UserDB.userTable.COLUMN_EMAIL}" +
+                ",${UserDB.userTable.COLUMN_PHONE}) VALUES (?,?,?,?)"
+        val myStatement = this.writableDatabase.compileStatement(sqlString)
+
+        myStatement.bindLong(1,user.id.toLong())
+        myStatement.bindString(2,user.nama)
+        myStatement.bindString(3,user.email)
+        myStatement.bindString(4,user.no_hp)
+
+        myStatement.execute()
+
+        myStatement.clearBindings()
     }
 }
