@@ -41,18 +41,20 @@ class MainActivity : AppCompatActivity() {
 
         //preloading data
 
-        //below 2 rows is used to simulate the transactional model with pre load in first run application.
+        //below rows is used to simulate the transactional model with pre load in first run application.
         //for sqllite
 //        mysqlitedb?.deleteAllUser()
+
         //for ROOM
         DeleteAllFromROOM()
         myFirstRunSharePref?.firstRun = true
-
+        //simulation section end here
 
         if(myFirstRunSharePref!!.firstRun){
             val secondIntent = Intent(this,PreloadActivity::class.java)
             startActivity(secondIntent)
         }
+
 
         btn_submit.setOnClickListener {
             val userTmp : User = User()
